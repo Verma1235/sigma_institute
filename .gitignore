@@ -1,0 +1,11 @@
+# large files
+
+uploads/
+*.mp4
+*.pdf
+*.zip
+*.rar
+*.7z
+
+# env
+.env

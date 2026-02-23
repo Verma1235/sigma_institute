@@ -114,7 +114,7 @@ include"../Chek_required_permission.php";
       else{?>
 
 <img width="100%" height="auto"
-    src="https://media.licdn.com/dms/image/D4D12AQEvlwvk_5jSBw/article-cover_image-shrink_600_2000/0/1714975705046?e=2147483647&v=beta&t=SSIjJpE29SKs3_amDcg2HY3bYhUaR145LScDJaJ5enk">
+    src="img/sigmabanner.png" alt="Image not found ...." style="border-radius:10px;box-shadow:0px 0px 10px 2px white;">
 
 
 <?php } ?>

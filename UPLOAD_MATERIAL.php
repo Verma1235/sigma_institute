@@ -77,7 +77,7 @@ if(isset($_SESSION['ADMIN']) ||  isset($_SESSION['COADMIN']) ||  isset($_SESSION
       </div>
       <div class="form-group mt-3">
         <label class="mr-2">Description</label>
-        <textarea type="text" class="form-control" name="Dis" placeholder="write description about topic.."
+        <textarea type="text" class="form-control" name="discription" placeholder="write description about topic.."
           id="DESCRIPTION"></textarea>
       </div>
       <hr>
@@ -186,7 +186,7 @@ if(isset($_SESSION['ADMIN']) ||  isset($_SESSION['COADMIN']) ||  isset($_SESSION
             $("#unsuccess_upload").hide();
               $("#process_upload").hide();
             }else if(data==1){
-              message("File not Uploaded !! Server issue ! Sorry","red");
+              message("File not Uploaded !! Server issue ","red");
               $("#unsuccess_upload").show(300);
               $("#unsuccess_upload").html(" ! file not Uploaded ! Unsuccessfull");
               $("#success_upload").hide();
@@ -204,6 +204,7 @@ if(isset($_SESSION['ADMIN']) ||  isset($_SESSION['COADMIN']) ||  isset($_SESSION
             $("#process_upload").html("!Process Completed !");
           
             }else{
+              alert(data);
               message("server Issue !! Please leave this plateform Temporary !","red");
               $("#unsuccess_upload").show(200);
               $("#unsuccess_upload").html(" !! Server Error !! Sorry ");

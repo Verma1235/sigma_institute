@@ -7,7 +7,7 @@ include("database.php");
 <html lang="en">
 
 <head>
-<!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
+  <!-- <script src="https://checkout.razorpay.com/v1/checkout.js"></script> -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sigma Learning</title>
@@ -23,13 +23,13 @@ include("database.php");
     rel="stylesheet">
   <!-- fonts style -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
- <script src="js\bootstrap-5.3.3-dist\js\bootstrap.bundle.min.js"></script>
+  <script src="js\bootstrap-5.3.3-dist\js\bootstrap.bundle.min.js"></script>
 
   <!-- icon -->
   <link rel="stylesheet" href="css\bootstrap-icons-1.11.3\font\bootstrap-icons.min.css">
 
   <link href="css/font-awesome.min.css" rel="stylesheet" />
- <link href="js\bootstrap-5.3.3-dist\css\bootstrap.min.css" rel="stylesheet"/>
+  <link href="js\bootstrap-5.3.3-dist\css\bootstrap.min.css" rel="stylesheet" />
   <!-- responsive style -->
   <link href="css/responsive.css" rel="stylesheet" />
   <!-- Custom styles for this template -->
@@ -64,20 +64,20 @@ include("database.php");
         <div class="search-cont">
           <!-- <input type="search" class="form-control header-input-searh" style="box-shadow: none;"
             placeholder="search content...."> -->
-          </div>
-<?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])){ 
-  $sql="SELECT `Read_s` FROM `contact_table` WHERE `Read_s`='0';";
-  $res=mysqli_query($conn,$sql);
-  $num=mysqli_num_rows($res);
-  if($num>99)
-  {
-    $num="99+";
-  }
-
-  
-  ?>
-        <div class="btn  notification-pannel "  ><i class="bi bi-bell-fill fs-3 shadow p-2 "  style='color:lime'><sup style='color:yellow' class='font-h'><small id="count_query"><?php echo $num;?></small></sup></i>
         </div>
+        <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) {
+          $sql = "SELECT `Read_s` FROM `contact_table` WHERE `Read_s`='0';";
+          $res = mysqli_query($conn, $sql);
+          $num = mysqli_num_rows($res);
+          if ($num > 99) {
+            $num = "99+";
+          }
+
+
+          ?>
+          <div class="btn  notification-pannel "><i class="bi bi-bell-fill fs-3 shadow p-2 " style='color:lime'><sup
+                style='color:yellow' class='font-h'><small id="count_query"><?php echo $num; ?></small></sup></i>
+          </div>
         <?php } ?>
 
         <div class="menu-container"><i class="bi bi-list i"></i></div>
@@ -87,19 +87,19 @@ include("database.php");
       <div class="option-container font-h">
         <div class="option-item"><a href="index.php">Home</a> </div>
         <?php
-       if(isset($_SESSION['NAME'])){
-      ?>
-        <div class="option-item logout-btn">logout</div>
-        <!-- <div class="option-item signup-btn">Apply Admission</div> -->
+        if (isset($_SESSION['NAME'])) {
+          ?>
+          <div class="option-item logout-btn">logout</div>
+          <!-- <div class="option-item signup-btn">Apply Admission</div> -->
 
-        <?php
-       }else{
-?>
-        <div class="option-item login-btn">Login</div>
-        <div class="option-item signup-btn">SignUp</div>
-        <?php
-       }
-       ?>
+          <?php
+        } else {
+          ?>
+          <div class="option-item login-btn">Login</div>
+          <div class="option-item signup-btn">SignUp</div>
+          <?php
+        }
+        ?>
 
         <div class="option-item">Contact</div>
         <div class="option-item">Help</div>
@@ -188,10 +188,13 @@ include("database.php");
                         });
 
 
-                      }else if(data==420){
-                        message("Your account has been deleted !!,if you want to backup of your account ! you should send a request through contact form,which is given below ! mention (Email,phone and id) and name !!","red");
+                      } else if (data == 420) {
+                        message("Your account has been deleted !!,if you want to backup of your account ! you should send a request through contact form,which is given below ! mention (Email,phone and id) and name !!", "red");
+                      } else if(data==201){
+                        message("TEMPORARY LOGIN DENIED BY INSTITUTE MANAGEMENT TEAM !!", "red");
+
                       } else {
-                        message(" Wrong Email or Password !"+data,"red");
+                        message(" Wrong Email or Password !" + data, "red");
 
                         LoginEmail.val("");
                         LoginPassword.val("");
@@ -353,49 +356,50 @@ include("database.php");
         <div class=" font-h">
           <div class="side-option-item"><a href="index.php">Home</a> </div>
           <?php
-          if(isset($_SESSION['NAME'])){
-      ?>
-          <div class="side-option-item logout-btn">Logout</div>
-          <!-- <div class="option-item signup-btn">Apply Admission</div> -->
+          if (isset($_SESSION['NAME'])) {
+            ?>
+            <div class="side-option-item logout-btn">Logout</div>
+            <!-- <div class="option-item signup-btn">Apply Admission</div> -->
 
-          <?php
-       }else{
-          ?>
-          <div class="side-option-item login-btn">Login</div>
+            <?php
+          } else {
+            ?>
+            <div class="side-option-item login-btn">Login</div>
 
-          <?php
-       }?>
+            <?php
+          } ?>
           <div class="side-option-item signup-btn">Sign up</div>
           <div class="side-option-item">Contact</div>
           <!-- <div class="side-option-item">Help</div> -->
 
-          <?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER']) ){ ?>
-          <div class="side-option-item">Send A new Post</div>
-          <div class="side-option-item upload_material">Upload Study material</div>
-          <div class="side-option-item Study_material">Manage Study Material</div>
-          <div class="side-option-item studentTable">Student Table</div>
-          <div class="side-option-item  myprofile">My Profile</div>
-          
-          <div class="side-option-item  video_rec_lec">Manage videos</div>
-          <div class="side-option-item admission-form-apply"> Admission section</div>
-          <?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])){ ?>
-         
-          <div class="side-option-item addmission_req">Admission Request</div>
-          <div class="side-option-item studentTable">Student Table</div>
-          <div class="side-option-item deleted_account">Deleted Account</div>
-          <div class="side-option-item manageTeacher">managment teacher</div>
-          <?php }?>
-          <?php if(isset($_SESSION['ADMIN'])){ ?>
-          <div class="side-option-item Admin_coAdmin_file">Manage CoAdmin data</div>
-          <?php } ?>
-          <?php }else if(isset($_SESSION['ID']))
-          {
-            ?>
-          <div class="side-option-item  myprofile">My Profile</div>
+          <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER'])) { ?>
+            <div class="side-option-item">Send A new Post</div>
+            <div class="side-option-item upload_material">Upload Study material</div>
+            <div class="side-option-item Study_material">Manage Study Material</div>
+            <div class="side-option-item studentTable">Student Table</div>
+            <div class="side-option-item  myprofile">My Profile</div>
 
-          <div class="side-option-item admission-form-apply">Admission section</div>
-          <div class="side-option-item Study_material">Study material</div>
-          <div class="side-option-item">setting</div>
+            <div class="side-option-item  video_rec_lec">Manage videos</div>
+            <div class="side-option-item admission-form-apply"> Admission section</div>
+            <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) { ?>
+
+              <div class="side-option-item addmission_req">Admission Request</div>
+              <div class="side-option-item studentTable">Student Table</div>
+              <div class="side-option-item deleted_account">Deleted Account</div>
+              <div class="side-option-item manageTeacher">managment teacher</div>
+            <?php } ?>
+            <?php if (isset($_SESSION['ADMIN'])) { ?>
+              <div class="side-option-item Admin_coAdmin_file">Manage CoAdmin data</div>
+              <div class="side-option-item admin_settings">Settings</div>
+
+            <?php } ?>
+          <?php } else if (isset($_SESSION['ID'])) {
+            ?>
+              <div class="side-option-item  myprofile">My Profile</div>
+
+              <div class="side-option-item admission-form-apply">Admission section</div>
+              <div class="side-option-item Study_material">Study material</div>
+              <div class="side-option-item">setting</div>
           <?php } ?>
           <!-- <div class="side-option-item"></div>
         <div class="side-option-item"></div> -->
@@ -417,33 +421,33 @@ include("database.php");
         <h3 style="display: inline-block;">U<u>ser Profil</u>e</h3>
       </div> -->
       <?php
-       if(isset($_SESSION['NAME'])){
-      ?>
-      <div style="display: flex;justify-content:flex-start;align-items: center;flex-wrap: wrap;">
-        <div class="user_name font-h"><i class="bi bi-person-circle "></i> Name:
-          <?php  echo $_SESSION['NAME'];?>
-        </div> &emsp;
-        <div class="user_name font-h"><i class="bi bi-envelope-at"></i> Email:
-          <?php  echo $_SESSION['Email'];?>
-        </div>&emsp;
-         <!-- <div class="user_name font-h">Phone: +91______________ </div>  -->
-        <div class="user_name font-h"><i class="bi bi-signpost-2"></i>Post:
-          <?php  echo $_SESSION['POST'];?>
-         </div> 
-        <?php
-       }else{
+      if (isset($_SESSION['NAME'])) {
         ?>
-        <div style="display: flex;justify-content: space-around;align-items: center;flex-wrap: wrap;">
-          <div class="user_name font-h"><i class="bi bi-person-circle "></i> Name: New Guest </div>
-          <div class="user_name font-h"><i class="bi bi-envelope-at"></i> Email: newguest_xyz_@gmail.com </div>
-           <!-- <div class="user_name font-h">Phone: +91______________ </div>  -->
-        <div class="user_name font-h"><i class="bi bi-signpost-2"></i>Post: visiter
-
+        <div style="display: flex;justify-content:flex-start;align-items: center;flex-wrap: wrap;">
+          <div class="user_name font-h"><i class="bi bi-person-circle "></i> Name:
+            <?php echo $_SESSION['NAME']; ?>
+          </div> &emsp;
+          <div class="user_name font-h"><i class="bi bi-envelope-at"></i> Email:
+            <?php echo $_SESSION['Email']; ?>
+          </div>&emsp;
+          <!-- <div class="user_name font-h">Phone: +91______________ </div>  -->
+          <div class="user_name font-h"><i class="bi bi-signpost-2"></i>Post:
+            <?php echo $_SESSION['POST']; ?>
           </div>
-
           <?php
-          }
-           ?>
+      } else {
+        ?>
+          <div style="display: flex;justify-content: space-around;align-items: center;flex-wrap: wrap;">
+            <div class="user_name font-h"><i class="bi bi-person-circle "></i> Name: New Guest </div>
+            <div class="user_name font-h"><i class="bi bi-envelope-at"></i> Email: newguest_xyz_@gmail.com </div>
+            <!-- <div class="user_name font-h">Phone: +91______________ </div>  -->
+            <div class="user_name font-h"><i class="bi bi-signpost-2"></i>Post: visiter
+
+            </div>
+
+            <?php
+      }
+      ?>
 
         </div>
       </div>
@@ -453,48 +457,53 @@ include("database.php");
 
       <div class="sub_main_cont2 font-h">
         <ul>
-          <?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER'])){ ?>
-          <li class="list-item signup-btn"><i class="bi bi-caret-right-fill i-color"></i> New Signup</li>
-          <li class="list-item admission-form-apply"><i class="bi bi-caret-right-fill i-color"></i> Admission section</li>
-          <li class="list-item"><i class="bi bi-caret-right-fill i-color"></i> Send A new post</li>
-          <li class="list-item upload_material"><i class="bi bi-caret-right-fill i-color"></i> Upload File </li>
-          <li class="list-item Study_material"><i class="bi bi-caret-right-fill i-color "></i> Manage files</li>
-          <li class="list-item myprofile"><i class="bi bi-caret-right-fill i-color"></i> My profile</li>
-          <li class="list-item studentTable"><i class="bi bi-caret-right-fill i-color"></i> Student Table</li>
-          <li class="list-item video_rec_lec"><i class="bi bi-caret-right-fill i-color "></i>Video Lectures
-          </li>
-         <?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])){?>
-          <li class="list-item"><i class="bi bi-caret-right-fill i-color"></i> User Signup data</li>
-          <li class="list-item addmission_req"><i class="bi bi-caret-right-fill i-color"></i> Admission Request </li>
-          <li class="list-item studentTable"><i class="bi bi-caret-right-fill i-color"></i> Student Table</li>
-          
-          <li class="list-item deleted_account"><i class="bi bi-caret-right-fill i-color"></i> Deleted Account </li>
-         
-          <li class="list-item manageTeacher"><i class="bi bi-caret-right-fill i-color"></i> Manage Teachers</li>
-          <?php }?>
+          <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER'])) { ?>
+            <li class="list-item signup-btn"><i class="bi bi-caret-right-fill i-color"></i> New Signup</li>
+            <li class="list-item admission-form-apply"><i class="bi bi-caret-right-fill i-color"></i> Admission section
+            </li>
+            <li class="list-item"><i class="bi bi-caret-right-fill i-color"></i> Send A new post</li>
+            <li class="list-item upload_material"><i class="bi bi-caret-right-fill i-color"></i> Upload File </li>
+            <li class="list-item Study_material"><i class="bi bi-caret-right-fill i-color "></i> Manage files</li>
+            <li class="list-item myprofile"><i class="bi bi-caret-right-fill i-color"></i> My profile</li>
+            <li class="list-item studentTable"><i class="bi bi-caret-right-fill i-color"></i> Student Table</li>
+            <li class="list-item video_rec_lec"><i class="bi bi-caret-right-fill i-color "></i>Video Lectures
+            </li>
+            <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) { ?>
+              <li class="list-item"><i class="bi bi-caret-right-fill i-color"></i> User Signup data</li>
+              <li class="list-item addmission_req"><i class="bi bi-caret-right-fill i-color"></i> Admission Request </li>
+              <li class="list-item studentTable"><i class="bi bi-caret-right-fill i-color"></i> Student Table</li>
 
-          <?php if(isset($_SESSION['ADMIN'])){ ?>
+              <li class="list-item deleted_account"><i class="bi bi-caret-right-fill i-color"></i> Deleted Account </li>
 
-          <li class="list-item Admin_coAdmin_file"><i class="bi bi-caret-right-fill i-color"></i> Manage CoAdmin 
-          </li>
+              <li class="list-item manageTeacher"><i class="bi bi-caret-right-fill i-color"></i> Manage Teachers</li>
+            <?php } ?>
+
+            <?php if (isset($_SESSION['ADMIN'])) { ?>
+
+              <li class="list-item Admin_coAdmin_file"><i class="bi bi-caret-right-fill i-color"></i> Manage CoAdmin
+              </li>
+              <li class="list-item admin_settings"><i class="bi bi-caret-right-fill i-color"></i> Settings
+              </li>
+
+            <?php } ?>
+
+
+
+          <?php } else if (isset($_SESSION['ID'])) { ?>
+              <li class="list-item admission-form-apply"><i class="bi bi-caret-right-fill i-color"></i> Admission section
+              </li>
+              <li class="list-item myprofile"><i class="bi bi-caret-right-fill i-color"></i> My Profile</li>
+              <li class="list-item Study_material"><i class="bi bi-caret-right-fill i-color "></i>Study
+                materials</li>
+
+
+          <?php } else { ?>
+              <li class="list-item "><i class="bi bi-caret-right-fill i-color"></i> About us</li>
+              <li class="list-item "><i class="bi bi-caret-right-fill i-color"></i> Help </li>
+
+
+
           <?php } ?>
-
-
-
-          <?php } else if(isset($_SESSION['ID'])){ ?>
-            <li class="list-item admission-form-apply"><i class="bi bi-caret-right-fill i-color"></i> Admission section</li>
-          <li class="list-item myprofile"><i class="bi bi-caret-right-fill i-color"></i> My Profile</li>
-          <li class="list-item Study_material"><i class="bi bi-caret-right-fill i-color "></i>Study
-          materials</li>
-         
-          
-          <?php }else{ ?>
-          <li class="list-item "><i class="bi bi-caret-right-fill i-color"></i> About us</li>
-          <li class="list-item "><i class="bi bi-caret-right-fill i-color"></i> Help </li>
-
-
-
-          <?php  } ?>
 
         </ul>
       </div>
@@ -531,22 +540,22 @@ include("database.php");
             <form class="font-h">
               <div class="mb-3">
                 <label class="form-label">Name</label>
-                <?php if(isset($_SESSION['ADMIN'])){?>
+                <?php if (isset($_SESSION['ADMIN'])) { ?>
 
-                <input type="text" class="form-control" id="EDITNAME" placeholder="Enter name..">
-                <?php }else{ ?>
-                <input type="text" class="form-control" id="EDITNAME" placeholder="Enter name.." readonly>
+                  <input type="text" class="form-control" id="EDITNAME" placeholder="Enter name..">
+                <?php } else { ?>
+                  <input type="text" class="form-control" id="EDITNAME" placeholder="Enter name.." readonly>
                 <?php } ?>
 
               </div>
               <div class="mb-3">
                 <label class="form-label">Email address</label>
-                <?php if(isset($_SESSION['ADMIN'])){?>
-                <input type="email" class="form-control" placeholder="Enter Email..." id="EDITEMAIL"
-                  aria-describedby="emailHelp">
-                <?php }else{ ?>
-                <input type="email" class="form-control" placeholder="Enter Email..." id="EDITEMAIL" readonly
-                  aria-describedby="emailHelp">
+                <?php if (isset($_SESSION['ADMIN'])) { ?>
+                  <input type="email" class="form-control" placeholder="Enter Email..." id="EDITEMAIL"
+                    aria-describedby="emailHelp">
+                <?php } else { ?>
+                  <input type="email" class="form-control" placeholder="Enter Email..." id="EDITEMAIL" readonly
+                    aria-describedby="emailHelp">
                 <?php } ?>
 
 
@@ -567,24 +576,24 @@ include("database.php");
                   <option value="GUEST">Guest</option>
                 </select> -->
 
-                <?php if(isset($_SESSION['ADMIN'])){?>
-                <select name="" id="EDITPOST" class="form-control">
-                  <span id="temp_post_holder" value="">
-                  <option value="STUDENT">Student</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="COADMIN">Co-Admin</option>
-                  <option value="TEACHER">Teacher</option>
-                  <option value="GUEST">Guest</option>
-                </select>
-                <?php }else{?>
-                <select name="" id="EDITPOST" class="form-control" disabled>
-                  <option value="STUDENT">Student</option>
-                  <option value="ADMIN">Admin</option>
-                  <option value="COADMIN">Co-Admin</option>
-                  <option value="TEACHER">Teacher</option>
-                  <option value="GUEST">Guest</option>
-                </select>
-                <!-- <select name="" id="EDITPOST" class="form-control" hidden>
+                <?php if (isset($_SESSION['ADMIN'])) { ?>
+                  <select name="" id="EDITPOST" class="form-control">
+                    <span id="temp_post_holder" value="">
+                      <option value="STUDENT">Student</option>
+                      <option value="ADMIN">Admin</option>
+                      <option value="COADMIN">Co-Admin</option>
+                      <option value="TEACHER">Teacher</option>
+                      <option value="GUEST">Guest</option>
+                  </select>
+                <?php } else { ?>
+                  <select name="" id="EDITPOST" class="form-control" disabled>
+                    <option value="STUDENT">Student</option>
+                    <option value="ADMIN">Admin</option>
+                    <option value="COADMIN">Co-Admin</option>
+                    <option value="TEACHER">Teacher</option>
+                    <option value="GUEST">Guest</option>
+                  </select>
+                  <!-- <select name="" id="EDITPOST" class="form-control" hidden>
                     <option value="1">Active</option>
                     <option value="0">not active</option>
                     <option value="2">Blocked</option>
@@ -652,23 +661,23 @@ include("database.php");
               <div class="mb-3">
                 <label class="form-label">Account </label>
 
-                <?php if(isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])){?>
-                <select name="" id="EDITACTIVE" class="form-control">
-                  <option value="1">Active</option>
-                  <option value="0">not active</option>
-                  <option value="2">Blocked</option>
-                </select>
-                <?php }else{?>
-                <select name="" id="EDITACTIVE_COADMIN" class="form-control" disabled>
-                  <option value="1">Active</option>
-                  <option value="0">not active</option>
-                  <option value="2">Blocked</option>
-                </select>
-                <select name="" id="EDITACTIVE" class="form-control" hidden>
-                  <option value="1">Active</option>
-                  <option value="0">not active</option>
-                  <option value="2">Blocked</option>
-                </select>
+                <?php if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) { ?>
+                  <select name="" id="EDITACTIVE" class="form-control">
+                    <option value="1">Active</option>
+                    <option value="0">not active</option>
+                    <option value="2">Blocked</option>
+                  </select>
+                <?php } else { ?>
+                  <select name="" id="EDITACTIVE_COADMIN" class="form-control" disabled>
+                    <option value="1">Active</option>
+                    <option value="0">not active</option>
+                    <option value="2">Blocked</option>
+                  </select>
+                  <select name="" id="EDITACTIVE" class="form-control" hidden>
+                    <option value="1">Active</option>
+                    <option value="0">not active</option>
+                    <option value="2">Blocked</option>
+                  </select>
 
                 <?php } ?>
               </div>
@@ -759,19 +768,19 @@ include("database.php");
         success: function (data) {
           if (data == 0) {
             message(" data updated susscessfully ", "green");
-            if($("#EDITPOST").val() !=$("#temp_post_holder").val()){
+            if ($("#EDITPOST").val() != $("#temp_post_holder").val()) {
               load_teacher_data();
               load_admion_data();
-              
+
             }
-           
+
             if ($("#EDITPOST").val() == "ADMIN" && $("#EDITPOST").val() == "COADMIN") {
               $("#Dynamic-screen").load("Admin_Coadmin.php");
             }
           } else if (data == 1) {
             message("! SERVER DOWN ! details unchanged oops!", "red");
           } else {
-            message("server Issue !! Please leave this plateform Temporary !","red");
+            message("server Issue !! Please leave this plateform Temporary !", "red");
           }
           // alert(data);
           // $("#Dynamic-screen").html(data);
@@ -788,33 +797,30 @@ include("database.php");
 <script type="text/javascript">
   $(document).ready(function () {
 
-  //   $("#Dynamic-screen").load("study_material.php");
-  $(".notification-pannel").on("click", () => {
-        
-        $("#Dynamic-screen").load("Notification_fronted.php");
-       
+    //   $("#Dynamic-screen").load("study_material.php");
+    $(".notification-pannel").on("click", () => {
+
+      $("#Dynamic-screen").load("Notification_fronted.php");
+
 
     });
 
-    count=function()
-    {
+    count = function () {
       $.ajax({
-        url:"count_query.php",
-        type:"GET",
-        success:function(data)
-        {
+        url: "count_query.php",
+        type: "GET",
+        success: function (data) {
           $("#count_query").html(data);
-          if(data>99)
-        {
-          $("#count_query").html("99+");
-        }
+          if (data > 99) {
+            $("#count_query").html("99+");
+          }
         }
       });
     }
     // count();
-    setInterval("count()",3000);
+    setInterval("count()", 3000);
 
-   
+
 
   });
 

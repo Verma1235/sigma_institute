@@ -1,172 +1,121 @@
 <?php
-include"database.php";
-$Status=2;
-$id_ad="";
-// $_SESSION['DBMS_ADM_STATUS']="incomplete";
-$_SESSION['ADMISSION_STATUS']=0;
-if(isset($_SESSION['ADMIN'])){
-    $Status=$_SESSION['ADMIN'];
-    $id_ad=$_SESSION['ID'];
-    $sql_activated_chk="SELECT ACTIVE,LOGIN_STATUS,LOGIN_ID,POST,DELETE_AC FROM `studenttable` WHERE `ID`='$id_ad';";
+// session_start();
+include "database.php";
 
-    $chked_query=mysqli_query($conn,$sql_activated_chk);
-    if( $chked_query){
-        if(mysqli_num_rows($chked_query)>0 ){
-        $row_get=mysqli_fetch_assoc($chked_query);
-        $Status=$row_get['ACTIVE'];
-        $_SESSION['ACTIVE']=$Status;
-        $_SESSION['ACTIVE_NO']=$row_get['ACTIVE'];
-    
-        // ########################## Login chek ##################
-        if($row_get['DELETE_AC']==1){
-            echo "<script>alert('! Your Account has been deleted by the Admin !'); window.location.href = 'logout.php'; </script>";
-        }
+$Status = 2;
+$id_ad = "";
+$_SESSION['ADMISSION_STATUS'] = 0;
 
-     if( $row_get['LOGIN_ID']!=$_SESSION['LOGIN_ID']){
-                echo "<script>alert('! Your Account  is login into an another device !'); window.location.href = 'logout.php'; </script>";
-            }
-            if($row_get["POST"]!="ADMIN"){
-                echo "<script>alert('! Your POST has been changed by Admin ! Relogin now !'); window.location.href = 'logout.php'; </script>";
-            }
-  
-        // ########################## Login chek ##################
-    
-        }else{
-            echo "<script>window.location.href = 'logout.php'; </script>";
-        }
-    }else{
-        echo "error in active status cheking 1";
+/* ================= COMMON FUNCTIONS ================= */
+
+function logoutMsg($msg = "")
+{
+    if ($msg != "") {
+        echo "<script>alert('$msg');</script>";
     }
-  
-}else if(isset($_SESSION['COADMIN'])){
-     $Status=$_SESSION['COADMIN'];
-     $id_ad=$_SESSION['ID'];
-     $sql_activated_chk="SELECT ACTIVE,LOGIN_STATUS,LOGIN_ID,POST,DELETE_AC FROM `studenttable` WHERE `ID`='$id_ad';";
- 
-     $chked_query=mysqli_query($conn,$sql_activated_chk);
-     if( $chked_query){
-        if(mysqli_num_rows($chked_query)>0){
-            $row_get=mysqli_fetch_assoc($chked_query);
-            $Status=$row_get['ACTIVE'];
-            $_SESSION['ACTIVE']=$Status;
-            $_SESSION['ACTIVE_NO']=$row_get['ACTIVE'];
-
-        // ########################## Login chek ##################
-        if($row_get['DELETE_AC']==1){
-            echo "<script>alert('! Your Account has been deleted by the Admin !'); window.location.href = 'logout.php'; </script>";
-        }
-
-        if( $row_get['LOGIN_ID']!=$_SESSION['LOGIN_ID']){
-            echo "<script>alert('! Your Account  is login into an another device !'); window.location.href = 'logout.php'; </script>";
-        }
-        if($row_get["POST"]!="COADMIN"){
-            echo "<script>alert('! Your POST has been changed by Admin! Relogin now !'); window.location.href = 'logout.php'; </script>";
-        }
-
-    // ########################## Login chek ##################
-
-                }else{
-                    echo "<script>window.location.href = 'logout.php'; </script>";
-                }
-     }else{
-         echo "error in active status cheking 2";
-     }
-   
-
-}else if(isset($_SESSION['TEACHER'])){
-    $Status=$_SESSION['TEACHER'];
-    $id_ad=$_SESSION['ID'];
-    $sql_activated_chk="SELECT ACTIVE,LOGIN_STATUS,LOGIN_ID,POST,DELETE_AC FROM `studenttable` WHERE `ID`='$id_ad';";
-
-    $chked_query=mysqli_query($conn,$sql_activated_chk);
-    if( $chked_query){
-       if(mysqli_num_rows($chked_query)>0){
-           $row_get=mysqli_fetch_assoc($chked_query);
-           $Status=$row_get['ACTIVE'];
-           $_SESSION['ACTIVE']=$Status;
-           $_SESSION['ACTIVE_NO']=$row_get['ACTIVE'];
-
-       // ########################## Login chek ##################
-       if($row_get['DELETE_AC']==1){
-        echo "<script>alert('! Your Account has been deleted by the Admin !'); window.location.href = 'logout.php'; </script>";
-    }
-
-       if( $row_get['LOGIN_ID']!=$_SESSION['LOGIN_ID']){
-           echo "<script>alert('! Your Account  is login into an another device !'); window.location.href = 'logout.php'; </script>";
-       }
-       if($row_get["POST"]!="TEACHER"){
-           echo "<script>alert('! Your POST has been changed by Admin! Relogin now !'); window.location.href = 'logout.php'; </script>";
-       }
-
-   // ########################## Login chek ##################
-
-               }else{
-                   echo "<script>window.location.href = 'logout.php'; </script>";
-               }
-    }else{
-        echo "error in active status cheking 2";
-    }
-  
-
+    echo "<script>window.location.href='logout.php';</script>";
+    exit;
 }
-else if(isset($_SESSION['ID'])){
-      
-    $id_ad=$_SESSION['ID'];
-    $sql_activated_chk="SELECT ACTIVE,LOGIN_STATUS,LOGIN_ID,POST,DELETE_AC FROM `studenttable` WHERE `ID`='$id_ad';";
+// check setings
+function chechsettings($conn)
+{
+    $sqlSettings = "SELECT * FROM `sigmasettings` WHERE `SETTING_ID`=1 ;";
+    $res = mysqli_query($conn, $sqlSettings);
+    $settings = mysqli_fetch_assoc($res);
+    $_SESSION['FILES_LOCATION'] = $settings['FILES_LOCATION'];
+    if ($settings['ACCOUNT_ACCESS'] == '1' && isset($_SESSION['LOGIN_ID']) && $_SESSION['POST'] !="ADMIN") {
+        logoutMsg($msg = "INSTITUTE MANAGEMENT TEAMS || FORCEFULLY LOGOUT ALL THE ACCOUNTS !!");
+    }
+}
+chechsettings($conn);
+function fetchUser($conn, $id)
+{
+    // STRING binding (important fix)
+    $stmt = $conn->prepare("SELECT ACTIVE,LOGIN_STATUS,LOGIN_ID,POST,DELETE_AC FROM studenttable WHERE ID=?");
+    $stmt->bind_param("s", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
 
-    $chked_query=mysqli_query($conn,$sql_activated_chk);
-    if( $chked_query){
-       if(mysqli_num_rows($chked_query)>0){
-           $row_get=mysqli_fetch_assoc($chked_query);
-           $Status=$row_get['ACTIVE'];
-           $_SESSION['ACTIVE_NO']=$row_get['ACTIVE'];
-
-       // ########################## Login chek ##################
-       if($row_get['DELETE_AC']==1){
-        echo "<script>alert('! Your Account has been deleted by the Admin !'); window.location.href = 'logout.php'; </script>";
+    if (!$res || $res->num_rows == 0) {
+        logoutMsg();
     }
 
-       if( $row_get['LOGIN_ID']!=$_SESSION['LOGIN_ID']){
-           echo "<script>alert('! Your Account  is login into an another device !'); window.location.href = 'logout.php'; </script>";
-       }
-       if($row_get["POST"]!=$_SESSION['POST']){
-           echo "<script>alert('! Your POST has been changed by Admin! Relogin now !'); window.location.href = 'logout.php'; </script>";
-       }
-
-   // ########################## Login chek ##################
-
-               }else{
-                   echo "<script>window.location.href = 'logout.php'; </script>";
-               }
-    }else{
-        echo "error in active status cheking 2";
-    }
-
-
-
-}else{
-    $Status=2;
+    return $res->fetch_assoc();
 }
 
-
-if(isset($_SESSION['ID']) && (!isset($_SESSION['ADMIN']) &&  !isset($_SESSION['COADMIN']) && !isset($_SESSION['TEACHER']))){
-
-    $Chk_admission_by_id=$_SESSION['ID'];
-    $sql_admission="SELECT ADMISSION_ID,ADMISSION_STATUS FROM `admission_record` WHERE `SIGNUP_ID`='$Chk_admission_by_id';";
-    $res=mysqli_query($conn,$sql_admission);
-    if($res){
-        if(mysqli_num_rows($res)>0){
-            $data=mysqli_fetch_assoc($res);
-            $_SESSION['ADMISSION_STATUS']=1;
-            $_SESSION['DBMS_ADM_STATUS']=$data['ADMISSION_STATUS'];
-
-        }
+function checkSecurity($row, $expectedPost = null)
+{
+    // account deleted
+    if ($row['DELETE_AC'] == 1) {
+        logoutMsg('! Your Account has been deleted by the Admin !');
     }
-    
-}else{
-    $_SESSION['ADMISSION_STATUS']=0;
+
+    // another device login
+    if (isset($_SESSION['LOGIN_ID']) && $row['LOGIN_ID'] != $_SESSION['LOGIN_ID']) {
+        logoutMsg('! Your Account is login into an another device !');
+    }
+
+    // post changed
+    if ($expectedPost !== null && $row['POST'] != $expectedPost) {
+        logoutMsg('! Your POST has been changed by Admin! Relogin now !');
+    }
 }
 
+/* ================= ROLE CHECK ================= */
 
+if (isset($_SESSION['ADMIN'])) {
+    $id_ad = $_SESSION['ID'];
+    $row = fetchUser($conn, $id_ad);
 
+    $Status = $row['ACTIVE'];
+    $_SESSION['ACTIVE'] = $Status;
+    $_SESSION['ACTIVE_NO'] = $Status;
+
+    checkSecurity($row, 'ADMIN');
+} else if (isset($_SESSION['COADMIN'])) {
+    $id_ad = $_SESSION['ID'];
+    $row = fetchUser($conn, $id_ad);
+
+    $Status = $row['ACTIVE'];
+    $_SESSION['ACTIVE'] = $Status;
+    $_SESSION['ACTIVE_NO'] = $Status;
+
+    checkSecurity($row, 'COADMIN');
+} else if (isset($_SESSION['TEACHER'])) {
+    $id_ad = $_SESSION['ID'];
+    $row = fetchUser($conn, $id_ad);
+
+    $Status = $row['ACTIVE'];
+    $_SESSION['ACTIVE'] = $Status;
+    $_SESSION['ACTIVE_NO'] = $Status;
+
+    checkSecurity($row, 'TEACHER');
+} else if (isset($_SESSION['ID'])) {
+    $id_ad = $_SESSION['ID'];
+    $row = fetchUser($conn, $id_ad);
+
+    $Status = $row['ACTIVE'];
+    $_SESSION['ACTIVE_NO'] = $Status;
+
+    checkSecurity($row, $_SESSION['POST'] ?? null);
+}
+
+/* ================= ADMISSION CHECK ================= */
+
+if (isset($_SESSION['ID']) && !isset($_SESSION['ADMIN']) && !isset($_SESSION['COADMIN']) && !isset($_SESSION['TEACHER'])) {
+    $stmt = $conn->prepare("SELECT ADMISSION_ID,ADMISSION_STATUS FROM admission_record WHERE SIGNUP_ID=?");
+    $stmt->bind_param("s", $_SESSION['ID']);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($res && $res->num_rows > 0) {
+        $data = $res->fetch_assoc();
+        $_SESSION['ADMISSION_STATUS'] = 1;
+        $_SESSION['DBMS_ADM_STATUS'] = $data['ADMISSION_STATUS'];
+    } else {
+        $_SESSION['ADMISSION_STATUS'] = 0;
+    }
+} else {
+    $_SESSION['ADMISSION_STATUS'] = 0;
+}
 ?>

@@ -1,23 +1,38 @@
-# Use official PHP 8.2 image with Apache
+# ---------- Base PHP Apache ----------
 FROM php:8.2-apache
 
-# Install mysqli (MySQL) extension
-RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    zip \
+    curl \
+    libzip-dev \
+    && docker-php-ext-install mysqli zip
 
-# Copy your project files into Apache root
-COPY . /var/www/html/
-
-# Enable Apache mod_rewrite (optional for friendly URLs)
+# Enable Apache rewrite
 RUN a2enmod rewrite
 
-# Make start.sh executable
-RUN chmod +x /var/www/html/start.sh
+# ---------- Install Composer ----------
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 # Set working directory
-WORKDIR /var/www/html/
+WORKDIR /var/www/html
 
-# Expose port (Render will map automatically)
+# Copy only composer files first (Docker cache optimization)
+COPY composer.json composer.lock* ./
+
+# Install PHP libraries (THIS WILL INSTALL google/apiclient automatically)
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Copy rest of project
+COPY . .
+
+# Fix permissions (important for uploads/temp files)
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose render port
 EXPOSE 10000
 
-# Run start.sh when container starts
-CMD ["./start.sh"]
+# Start Apache
+CMD ["apache2-foreground"]

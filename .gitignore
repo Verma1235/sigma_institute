@@ -1,11 +1,51 @@
-# large files
+# ==============================
+# Composer (DO NOT PUSH vendor)
+# ==============================
+/vendor/
+composer.phar
 
-uploads/
-*.mp4
-*.pdf
+# ==============================
+# Google Drive credentials (SECRET)
+# ==============================
+service-account.json
+
+# ==============================
+# Upload folders (runtime data)
+# ==============================
+# /pdf/
+/uploads/
+/temp/
+/tmp/
+
+# ==============================
+# Environment secrets
+# ==============================
+.env
+.env.*
+
+# ==============================
+# Archives / backups
+# ==============================
 *.zip
 *.rar
 *.7z
+*.tar
+*.gz
+*.pdf
 
-# env
-.env
+# ==============================
+# Logs & cache
+# ==============================
+*.log
+.cache/
+build/
+dist/
+
+# ==============================
+# IDE / OS
+# ==============================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+/gen-lang-client-0755448917-c6fc00a984e4.json

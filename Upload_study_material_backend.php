@@ -7,7 +7,6 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
     // Constants for Cloud Storage
 /* ================= GOOGLE AUTH (Render ENV Compatible) ================= */
 
-    // Read JSON from Render ENV
     $credentialsJson = getenv("GOOGLE_SERVICE_ACCOUNT_JSON");
 
     if (!$credentialsJson) {
@@ -87,11 +86,13 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
                 $safe_ch_name = mysqli_real_escape_string($conn, $chapter_name);
                 $safe_desc = mysqli_real_escape_string($conn, $Dis);
                 $safe_sub = mysqli_real_escape_string($conn, $subject);
+                $FILES_LOCATION = isset($_SESSION['FILES_LOCATION']) ? $_SESSION['FILES_LOCATION'] : 'drive';
 
                 $sql_upload = "INSERT INTO `study_material`
-                (`PDF_ID`,`UPLOADED_BY_ID`,`UPL_BY`,`CLASS`,`CHAPTER_NO`,`CHAPTER_NAME`,`FILE`,`STATUS`,`DESCRIPTION`,`SUBJECT`)
+                (`PDF_ID`,`UPLOADED_BY_ID`,`UPL_BY`,`CLASS`,`CHAPTER_NO`,`CHAPTER_NAME`,`FILE`,`STATUS`,`DESCRIPTION`,`SUBJECT`,`FILES_LOCATION`)
                 VALUES
-                ('$File_Id','$id_user','$POST_user','$safe_class','$safe_ch_no','$safe_ch_name','$googleFileId','1','$safe_desc','$safe_sub')";
+                ('$File_Id','$id_user','$POST_user','$safe_class','$safe_ch_no','$safe_ch_name','$googleFileId','1','$safe_desc','$safe_sub','$FILES_LOCATION')";
+
 
                 if (mysqli_query($conn, $sql_upload)) {
                     echo 0; // Success

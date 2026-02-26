@@ -28,7 +28,6 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
     if (!file_exists($tempGoogleFile)) {
         file_put_contents($tempGoogleFile, $credentialsJson);
     }
-
     // Define constant as FILE PATH (not JSON)
     define('SERVICE_ACCOUNT_KEY_FILE', $tempGoogleFile);
 

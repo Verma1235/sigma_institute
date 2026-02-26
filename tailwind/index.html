@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"> -->
+  <title>Document</title>
+  <script src="jquery.js"></script>
+  <style>
+    .svg_img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      background: rgb(111, 228, 232);
+      padding: 8px;
+      color: rgb(31, 31, 181);
+      border-right: 1px solid rgb(31, 31, 181);
+    }
+  </style>
+</head>
+
+<body>
+
+  <br>
+  <!-- contact us -->
+  <section class="text-gray-600 body-font relative" id="contact_us">
+    <div class="container  py-24 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h3 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900 font-h">Contact Us</h3>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+        </p>
+      </div>
+      <div class="lg:w-1/2 md:w-2/3 mx-auto font-h">
+        <div class="flex flex-wrap -m-2">
+          <div class="p-2 w-1/2">
+            <div class="relative">
+              <label for="name" class="leading-7 text-sm text-gray-600 ">Name</label>
+              <input type="text" id="name_user" name="name" placeholder="Enter name.." class="form-control">
+            </div>
+          </div>
+          <div class="p-2 w-1/2">
+            <div class="relative">
+              <label for="phone" class="leading-7 text-sm text-gray-600">Phone number</label>
+              <input type="tel" id="phone" name="phone" placeholder="Enter phone no.." class=" form-control">
+            </div>
+          </div>
+          <div class="p-2 w-full">
+            <div class="relative">
+              <label for="message" class="leading-7 text-sm text-gray-600">Message</label>
+              <textarea id="message" name="message" placeholder="Write message regarding query"
+                class=" form-control"></textarea>
+            </div>
+          </div>
+          <div class="p-2 w-full">
+            <button class=" btn btn-success" id="send_contact">Send</button>
+          </div>
+          <div class="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
+
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- contact us-->
+  <script>
+    $(document).ready(function () {
+      var name = $("#name_user");
+      var phone = $("#phone");
+      var message = $("#message");
+
+      ClrData = () => {
+        name.val("");
+        phone.val("");
+        message.val("");
+
+      }
+
+
+      function IsPhone(phone) {
+        const regex = /^([0-9]{10,10})+$/;
+        if (!regex.test(phone)) {
+          return false;
+        }
+        else {
+          return true;
+        }
+      }
+      function isName(nameCk) {
+        const regex2 = /^([a-zA-Z\s]{4,})+$/;
+        if (!regex2.test(nameCk)) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+
+      $("#send_contact").on("click", () => {
+
+
+        if (name.val() != "" && phone.val() != "" && message.val() != "" && name.val() != " " && phone.val() != " " && message.val() != " ") {
+
+          var chk_phone = IsPhone(phone.val());
+          var chk_name = isName(name.val());
+          if (chk_phone == true && chk_name == true) {
+
+            $.ajax({
+              url: "tailwind/contact.php",
+              type: "POST",
+              data: { NAME: name.val(), PHONE: phone.val(), MESSAGE: message.val() },
+              success: function (res) {
+                if (res == 1) {
+                  alert("Send Successfully !");
+                  ClrData();
+                } else if (res == 2) {
+                  alert("Somthing went wrong !");
+                } else {
+                  alert(" Avoid to use double quatation marks  !");
+                }
+
+              }
+            })
+
+          } else if (chk_phone == false) {
+            alert("Enter correct phone number !");
+          } else if (chk_name == false) {
+           var a= confirm(" Have you login now !!");
+           alert(name.val())
+           if(a==true)
+           {
+            alert("sorry this sevice temporary unavalable");
+           }else{
+            alert("you need to login your account first");
+           }
+
+          }
+          else {
+            alert("somthing went wrong !!");
+          }
+
+        } else {
+          alert("All filed are required Name, Phone no. and message regarding query");
+        }
+
+      });
+
+
+    });
+
+
+  </script>
+
+
+
+
+  <!-- fetures -->
+  <section class="text-gray-600 body-font">
+    <div class="container-fluid ">
+      <div class="p-2">
+        <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900"> ALPHA INSTITUTE OF EDUCATION </h1>
+        <p class="lg:w-1/2 w-full leading-relaxed text-gray-500">Welcome to Alpha Institute, where our commitment to
+          excellence in education transforms the future of students. At Alpha Institute, we believe that every student
+          deserves access to top-notch education that not only imparts knowledge but also equips them with the skills
+          necessary for success in an ever-evolving world.</p>
+      </div>
+      <div class="flex flex-wrap ">
+        <div class="p-2 border">
+          <div class=" p-2 ">
+            <div
+              class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-4 svg_img">
+              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                class="w-6 h-6" viewBox="0 0 24 24">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+              </svg>
+            </div>
+            <h2 class="text-lg text-gray-900 font-medium title-font mb-2 font-h">Our Mission</h2>
+            <p class="leading-relaxed text-base">At Alpha Institute, our mission is clear: to provide quality education
+              that fosters intellectual growth, critical thinking, and a passion for lifelong learning. We strive to
+              create an environment where students can thrive academically, socially, and personally, preparing them to
+              excel in their future endeavors.</p>
+          </div>
+        </div>
+
+        <div class="p-2 border mt-2">
+          <div class=" p-2 ">
+            <div
+              class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-4 svg_img">
+              <i class="bi bi-shield-check svg_img fs-1"></i>
+            </div>
+            <h2 class="text-lg text-gray-900 font-medium title-font mb-2 font-h">Online Admission process</h2>
+            <p class="leading-relaxed text-base">
+            <ol>
+              <li><b>Visit the Institute’s Website:</b> Start by visiting the Alpha Institute's official website. They
+                will typically have an admissions section with detailed information.</li>
+              <li><b>Create an Account:</b> Require you to create an account by sign up. This might involve providing
+                personal details like name, email address, and set a password. and try to <mark>login with email and
+                  password.</mark> </li>
+              <li><b>Fill Out the Application Form:</b> Complete the online application form. This usually involves
+                providing academic qualifications and adhar number of student.</li>
+              <li><b>Upload Documents:</b> You will likely need to upload certain documents, such as adhar photo,
+                student photo, and other relevant certificates according to requirement.</li>
+              <li><b>Pay the Application Fee:</b> There might be an application fee that you need to pay online. The
+                website will provide instructions on how to do this.</li>
+              <li><b>Confirmation and Follow-Up:</b> Once submitted, you should receive a confirmation email. The
+                institute might follow up with additional instructions or requests for further information.</li>
+            </ol>
+            </p>
+          </div>
+        </div>
+
+        <div class="p-2 border mt-2 mb-2">
+          <div class=" p-2 ">
+            <div
+              class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-4 svg_img">
+              <i class="bi bi-journal-bookmark svg_img fs-1"></i>
+            </div>
+            <h2 class="text-lg text-gray-900 font-medium title-font mb-2 font-h">Accessing Study Materials</h2>
+            <p class="leading-relaxed text-base">
+            <ol>
+              <li><b>Student Portal:</b> After admission, you will usually get access to a student portal where you can
+                download study materials, including PDFs. Get access after the approval by the Admin.</li>
+            </ol>
+            </p>
+          </div>
+        </div>
+
+
+
+
+      </div>
+      <button class="btn btn-warning signup-btn" onclick="alert('Click on signup button on given option.')">Create a new
+        Account</button>
+    </div>
+
+  </section>
+  <br>
+  <center>
+    <h6><small><i class="bi bi-c-circle font-h"></i> copyright by vermaplateform. Developer <mark> Dinesh kumar
+          Verma</mark>. <a href="https://wa.me/qr/PQLVUM3GNTR7F1">Contact now</a> </small> </h6>
+  </center>
+</body>
+
+</html>

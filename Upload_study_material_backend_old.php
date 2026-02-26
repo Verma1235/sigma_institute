@@ -61,8 +61,8 @@ function handleFileUpload()
 
 
 
-    if (empty($chapter_name) || empty($subject) || empty($class) || empty($chapter_no)) {
-        echo "Error: Missing required fields for upload. " . $chapter_name . "  " . $subject . " " . $class . " " . $chapter_no;
+    if (empty($chapter_name) || empty($subject)  || empty($chapter_no)) {
+        echo "Error: Missing required fields for upload.  NAME:" . $chapter_name . " \n SUBJECT: " . $subject . " \n CLASS: " . $class . " \n CHAPTER NO:  " . $chapter_no;
         return;
     }
 

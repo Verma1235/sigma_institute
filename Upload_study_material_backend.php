@@ -5,8 +5,30 @@ include "Chek_required_permission.php"; // Assuming $conn and $Status are define
 require_once __DIR__ . '/vendor/autoload.php';
 
 // Constants for Cloud Storage
-define('SERVICE_ACCOUNT_KEY_FILE', __DIR__ . '/gen-lang-client-0755448917-c6fc00a984e4.json');
+/* ================= GOOGLE AUTH (Render ENV Compatible) ================= */
+
+// Read JSON from Render ENV
+$credentialsJson = getenv("GOOGLE_SERVICE_ACCOUNT_JSON");
+
+if (!$credentialsJson) {
+die("Google credentials missing in environment variables");
+}
+
+// Create temporary credentials file inside container
+$tempGoogleFile = sys_get_temp_dir() . '/google_service_account.json';
+
+// Write JSON into temp file (only once per request)
+if (!file_exists($tempGoogleFile)) {
+file_put_contents($tempGoogleFile, $credentialsJson);
+}
+
+// Define constant as FILE PATH (not JSON)
+define('SERVICE_ACCOUNT_KEY_FILE', $tempGoogleFile);
+
+// Google Drive folder ID
 define('GOOGLE_DRIVE_UPLOAD_FOLDER_ID', '1AcLwAM3K4hM4OcxrtWsMY8dBrykvcz87');
+
+/* ======================================================================= */
 
 extract($_POST);
 

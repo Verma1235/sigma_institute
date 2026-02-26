@@ -12,16 +12,30 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
         exit;
     }
 
-    // --- Configuration Constants ---
-// Path to your service account JSON key file.
-// Make sure 'gen-lang-client-0755448917-c6fc00a984e4.json' is in the same directory as this script,
-// or provide the correct absolute/relative path.
-    define('SERVICE_ACCOUNT_KEY_FILE', __DIR__ . '/gen-lang-client-0755448917-c6fc00a984e4.json');
+    /* ================= GOOGLE AUTH (Render ENV Compatible) ================= */
 
-    // The Google Drive Folder ID where files will be uploaded.
-// This folder must exist in Google Drive, and the service account must have 'Editor' access.
+    // Read JSON from Render ENV
+    $credentialsJson = getenv("GOOGLE_SERVICE_ACCOUNT_JSON");
+
+    if (!$credentialsJson) {
+        die("Google credentials missing in environment variables");
+    }
+
+    // Create temporary credentials file inside container
+    $tempGoogleFile = sys_get_temp_dir() . '/google_service_account.json';
+
+    // Write JSON into temp file (only once per request)
+    if (!file_exists($tempGoogleFile)) {
+        file_put_contents($tempGoogleFile, $credentialsJson);
+    }
+
+    // Define constant as FILE PATH (not JSON)
+    define('SERVICE_ACCOUNT_KEY_FILE', $tempGoogleFile);
+
+    // Google Drive folder ID
     define('GOOGLE_DRIVE_UPLOAD_FOLDER_ID', '1AcLwAM3K4hM4OcxrtWsMY8dBrykvcz87');
-    // --- End Configuration ---
+
+    /* ======================================================================= */
 
     // Initialize Google Client and Drive Service
     $client = new Google_Client();

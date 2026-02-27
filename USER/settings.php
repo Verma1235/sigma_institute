@@ -57,7 +57,7 @@ if (isset($_SESSION['ADMIN'])) {
         default:
 
     }
-     $signup_yes = "";
+    $signup_yes = "";
     $signup_no = "";
     switch ($row["SIGNUP_ALLOW"]) {
         case "2":
@@ -289,8 +289,10 @@ if (isset($_SESSION['ADMIN'])) {
 
                             if (response.status === 'success') {
                                 msgBox.addClass('success').text(response.message).fadeIn();
+                                message(response.message, "green");
                             } else {
                                 msgBox.addClass('error').text(response.message).fadeIn();
+                                message(response.message, "red");
                             }
 
                             btn.prop('disabled', false).text('Save Changes');

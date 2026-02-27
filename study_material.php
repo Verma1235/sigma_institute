@@ -83,10 +83,10 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
                                     <label>Current File</label>
                                     <input type="text" name="pre_file" class="form-control" id="PDF_FILE_NAME" readonly>
                                 </div>
-                                <div class="form-group mb-3">
+                                <!-- <div class="form-group mb-3">
                                     <label>Change file:</label>
                                     <input type="file" name="file" id="FILE_UPLOADED" class="form-control">
-                                </div>
+                                </div> -->
 
                                 <div class="progress mb-2" style="height: 20px;">
                                     <div class="progress-bar progress-bar-striped bg-success" id="ProgressBar"
@@ -172,6 +172,7 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
 
                 // Initial Load
                 study_material("", "CHAPTER_NAME");
+
             });
 
             $(document).ready(function () {
@@ -211,6 +212,43 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
                         }
                     });
                 });
+                // Update Form Submit
+                $("#Submit_form").on("submit", function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+
+                    $.ajax({
+                        xhr: function () {
+                            const xhr = new window.XMLHttpRequest();
+                            xhr.upload.addEventListener("progress", (evt) => {
+                                if (evt.lengthComputable) {
+                                    let pct = Math.round((evt.loaded / evt.total) * 100);
+                                    $("#ProgressBar").width(pct + '%').text(pct + '%');
+                                }
+                            }, false);
+                            return xhr;
+                        },
+                        url: "edit_study_material_update.php",
+                        type: "POST",
+                        data: formData,
+                        contentType: false,
+                        processData: false,
+                        beforeSend: () => {
+                            $("#STUDY_MATERIAL_UPLOAD").prop('disabled', true);
+                            show_status("Uploading... please wait", "orange");
+                        },
+                        success: function (data) {
+                            $("#STUDY_MATERIAL_UPLOAD").prop('disabled', false);
+                            if (data == 0) {
+                                show_status("Update Successful!", "green");
+                                load_study_material();
+                            } else {
+                                show_status("Error: " + data, "red");
+                            }
+                        }
+                    });
+                });
+
             });
         </script>
         <?php

@@ -38,7 +38,7 @@ switch ($action) {
     case 'DELETE1': // Renamed from "DELETE1" to "DELETE" as it's more descriptive.
         handleFileDelete();
         break;
-    case 'FETCH_DETAILS':
+    case 'EDIT':
         handleFetchDetails();
         break;
     default:

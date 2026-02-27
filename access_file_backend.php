@@ -1,127 +1,104 @@
 <?php
 session_start();
-include "Chek_required_permission.php";
+include "Chek_required_permission.php"; 
+
 $HTML = "";
-$F_Id = "";
+
 if (isset($_POST['ID']) && ($Status == 1) && isset($_POST['SEARCH_DATA'])) {
-    $sData = $_POST['SEARCH_DATA'];
-    $sType = $_POST['SEARCH_TYPE'];
-    $FILES_LOCATION=$_SESSION['FILES_LOCATION']?:'drive';
-    if ($_POST['SEARCH_DATA'] != "" && ($sType == 'DESCRIPTION' || $sType == 'CHAPTER_NAME')) {
-        $sData1 = $sData . '%';
-        $sData2 = '%' . $sData;
-        $sData3 = '%' . $sData . '%';
-        $sql = "SELECT * FROM `study_material` WHERE (((`$sType` LIKE '$sData1') || (`$sType` LIKE '$sData2') || (`$sType` LIKE '$sData3'))) AND `FILES_LOCATION`='$FILES_LOCATION' ;";
-    } else if ($_POST['SEARCH_DATA'] != "") {
-        $sData1 = $sData . '%';
-        // $sData2='%'.$sData;
-        // $sData3='%'.$sData.'%';
-        $sql = "SELECT * FROM `study_material` WHERE (`$sType` LIKE '$sData1') AND `FILES_LOCATION`='$FILES_LOCATION';";
+    
+    $sData = mysqli_real_escape_string($conn, $_POST['SEARCH_DATA']);
+    $sType = mysqli_real_escape_string($conn, $_POST['SEARCH_TYPE']);
+    
+    // Fix: Match the session variable to your database storage strings
+    $FILES_LOCATION = $_SESSION['FILES_LOCATION'] ?? 'local';
+
+    // 1. Build SQL Query - Removed "ORDER BY id" to fix your crash
+    if ($sData != "") {
+        if ($sType == 'DESCRIPTION' || $sType == 'CHAPTER_NAME') {
+            $sql = "SELECT * FROM `study_material` 
+                    WHERE (`$sType` LIKE '%$sData%') 
+                    AND `FILES_LOCATION`='$FILES_LOCATION';";
+        } else {
+            $sql = "SELECT * FROM `study_material` 
+                    WHERE `$sType` LIKE '$sData%' 
+                    AND `FILES_LOCATION`='$FILES_LOCATION';";
+        }
     } else {
         $sql = "SELECT * FROM `study_material` WHERE `FILES_LOCATION`='$FILES_LOCATION';";
     }
+
     $query = mysqli_query($conn, $sql);
+
     if ($query) {
         if (mysqli_num_rows($query) > 0) {
-
-
             while ($row = mysqli_fetch_assoc($query)) {
                 $F_Id = $row['PDF_ID'];
-                $file = $row['FILE'];
-                $uploadedby = "";
-                $uploaded_id = $row['UPLOADED_BY_ID'];
+                $file_val = $row['FILE'];
+                $location = $row['FILES_LOCATION'];
+                
+                $uploadedby = ($row['UPLOADED_BY_ID'] == $_SESSION['ID']) ? "Myself" : $row['UPL_BY'];
 
-                if (isset($_SESSION['TEACHER']) || isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) {
-                    if ($_SESSION['ID'] == $uploaded_id) {
-                        $uploadedby = "Myself";
-                    } else {
-                        $uploadedby = $row['UPL_BY'];
-                    }
+                // 2. Determine View/Download Links
+                if ($location === 'drive') {
+                    $view_path = "view_file.php?id=$F_Id";
+                    $download_path = "view_file.php?id=$F_Id&download=1";
+                } else {
+                    $view_path = "pdf/$file_val";
+                    $download_path = "pdf/$file_val"; 
                 }
+              $class=  $row['CLASS']==0?'All':$row['CLASS'];
 
-                $HTML .= "  <!-- A card of pdf view edit delete or download  -->
-             <div class='col-sm-6 mb-3 mb-sm-0'>
-             <div class='card'>
-                <div class='card-body card-local '>
-                    <h4 class='card-title font-h'><i class='bi bi-caret-right'><small>{$row['CHAPTER_NAME']}</small></i> </h4>
-                    <small class='card-title font-h' style='color:brown'><i class='bi bi-caret-right-fill'>Chapter:
-                        {$row['CHAPTER_NO']}</i> </small> &emsp; <small class='card-title font-h' style='color:brown'>
-                           <i class='bi bi-caret-right-fill'>Class: {$row['CLASS']}</i></small><br>
-                            <small class='card-title font-h' style='color:blue'>
-                           <i class='bi bi-caret-right-fill'>Subject: {$row['SUBJECT']}</i></small>
-                    <p class='card-text font-h ' style='color: rgb(22, 4, 107);font-size:15px;'><i
-                            class='bi bi-caret-right-fill'>About: {$row['DESCRIPTION']}</i>
-                            <br><i class='bi bi-caret-right-fill'>pdf ID: {$row['PDF_ID']}</i>";
+                $HTML .= "
+                <div class='col-sm-6 mb-4'>
+                    <div class='card shadow-sm h-100'>
+                        <div class='card-body card-local'>
+                            <h5 class='card-title font-h ' style='color:purple'>
+                                <i class='bi bi-file-earmark-pdf-fill me-2'></i>{$row['CHAPTER_NAME']}
+                            </h5>
+                            <div class='mb-2'>
+                                <span class='badge bg-light text-dark border'>Ch: {$row['CHAPTER_NO']}</span>
+                                <span class='badge bg-light text-dark border'>Class: {$class}</span>
+                                <span class='badge bg-info text-white'>{$row['SUBJECT']}</span>
+                            </div>
+                            <p class='card-text small text-muted mb-3'>
+                                <strong>About:</strong> {$row['DESCRIPTION']}<br>
+                                <strong>ID:</strong> <code class='text-danger'>$F_Id</code>
+                            </p>
+                            <div class='d-flex flex-wrap gap-2 mb-3'>";
+
                 if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER'])) {
-                    if ($_SESSION['ACTIVE'] == 0 || $_SESSION['ACTIVE'] == 1) {
-
-                        $HTML .= "&emsp; <i class='bi bi-caret-right-fill'>uploaded by: <b style='color:green;font-weight:bolder;'>{$uploadedby}</b></i>  ";
-
-                    }
-                }
-                $HTML .= " <div class='d-flex sub-card-pdf' style='flex-wrap: wrap;'>";
-                if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN']) || isset($_SESSION['TEACHER'])) {
-                    if ($_SESSION['ACTIVE'] == 0 || $_SESSION['ACTIVE'] == 1) {
-                        $HTML .= "  <button data-file_id='{$row['PDF_ID']}' data-bs-toggle='modal' data-bs-target='#Edit_pdf_modal' href='#' class='btn btn-warning m-1 pdf_edit_btn'
-                            style='display: flex; justify-content: flex-start; align-items: center; width: fit-content;'>
-                            <i class='bi bi-pencil fs-5 ' style='color:rgb(207, 34, 34);margin-right:5px;'></i>
-                            Edit</button>
-                         <button data-idF1='{$F_Id}' data-file='{$file}' class='btn btn-danger m-1 pdf_delete_btn'
-                            style='display: flex; justify-content: flex-start; align-items: center; width: fit-content;'>
-                            <i class='bi bi-trash fs-5' style='color:rgb(232, 212, 212);margin-right:5px;'></i>
-                            Delete</button>";
+                    if ($_SESSION['ACTIVE'] == 1 || $_SESSION['ACTIVE'] == 0) {
+                        $HTML .= "
+                        <button data-file_id='$F_Id' data-bs-toggle='modal' data-bs-target='#Edit_pdf_modal' class='btn btn-warning btn-sm pdf_edit_btn'>
+                            <i class='bi bi-pencil-square'></i> Edit
+                        </button>
+                        <button data-idF1='$F_Id' data-file='$file_val' class='btn btn-danger btn-sm pdf_delete_btn'>
+                            <i class='bi bi-trash3'></i> Delete
+                        </button>";
                     }
                 }
 
-                $HTML .= "   <a href='pdf/{$row['FILE']}' target='_blank' class='btn btn-success m-1 shadow pdf_view_btn'
-                            style='display: flex; justify-content: flex-start; align-items: center; width: fit-content;'>
-                            <i class='bi bi-filetype-pdf fs-5' style='color:rgb(215, 181, 27);margin-right:5px;'></i>
-                            View</a>
-                          <button href='' style='color:white' data-file='{$file}'  class='btn btn-dark m-1 pdf_download_btn'
-                            style='display: flex; justify-content: flex-start; align-items: center; width: fit-content;'>
-                            <i class='bi bi-filetype-pdf fs-5' style='color:rgb(215, 181, 27);margin-right:5px;'></i>
-                            Download </button> 
+                $HTML .= "
+                        <a href='$view_path' target='_blank' class='btn btn-success btn-sm shadow-sm'>
+                            <i class='bi bi-eye'></i> View
+                        </a>
+                        <a href='$download_path' download class='btn btn-dark btn-sm shadow-sm'>
+                            <i class='bi bi-download'></i> Download
+                        </a>
                     </div>
-                    <div class='progress ' role='progressbar' aria-label='Default striped example' aria-valuenow='10' aria-valuemin='0' aria-valuemax='100' style='background:  linear-gradient(to right,rgb(17, 206, 235),rgb(64, 241, 117));'>
-                        <div class='progress-bar progress-bar-striped download_progress' style='width: 0%' >0%</div>
-                      </div>
-                </div>
-              </div>
-              </div>
-             <!-- A card of pdf view edit delete or download  -->";
-
-
-
+                            <div class='progress' style='height: 1px;'>
+                                <div class='progress-bar progress-bar-striped progress-bar-animated download_progress' style='width: 0%'></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>";
             }
-
-
             echo $HTML;
-
-
         } else {
-            echo "<center><h4 class='font-h m-3' style='color:red;'> No file Found </h4> </center>";
+            echo "<div class='col-12 text-center mt-5'><h4 class='text-danger font-h'>No files found in $FILES_LOCATION storage.</h4></div>";
         }
     } else {
-        echo "sql error";
-    }
-
-
-
-} else {
-    if (isset($_SESSION['ADMIN']) || isset($_SESSION['COADMIN'])) {
-        echo " <center><h4 class='font-h' style='color:red;'>!! ACCESS DENIED !! </h4> </center>";
-    } else if (isset($_SESSION['TEACHER'])) {
-        $account_active = $_SESSION['ACTIVE'];
-        $data_s = "active";
-        if ($account_active == 0) {
-            $data_s = "Inactive";
-        } else if ($account_active == 2) {
-            $data_s = "blocked";
-        }
-        echo " <center><h4 class='font-h' style='color:red;'>!! ACCESS DENIED !! because your account is {$data_s} </h4> </center>";
-
-    } else {
-        echo " <center><h4 class='font-h'>!! After the Approval by the Teacher you can access All Pdf and file !! </h4> </center>";
+        echo "SQL Error: " . mysqli_error($conn);
     }
 }
 ?>

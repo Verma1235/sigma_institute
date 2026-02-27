@@ -242,13 +242,15 @@ if (isset($_SESSION['LOGIN_ID'])) {
 
             // Edit Modal Populate
             FILE_Container.on("click", ".pdf_edit_btn", function () {
+                // alert("working")
                 const pdf_id = $(this).data("file_id");
+
                 $("#FILE_UPLOADED").val("");
                 $("#ProgressBar").width('0%').text('0%');
                 $("#alert_box").hide();
 
                 $.ajax({
-                    url: "Upload_study_material_backend_old.php",
+                    url: "Upload_study_material_backend.php",
                     type: "POST",
                     data: { PDF_ID: pdf_id, ACTION: "EDIT" },
                     dataType: "JSON",
@@ -261,6 +263,11 @@ if (isset($_SESSION['LOGIN_ID'])) {
                         $("#PDF_FILE_NAME").val(d.FILE);
                         $("#SUBJECT").val(d.SUBJECT);
                         $("#CHAPTER_NO").val(d.CHAPTER_NO);
+                        // alert(res)
+                    },
+                    error: function (err) {
+                        // alert(err);
+                        show_status("Error in fetching Files", "red");
                     }
                 });
             });

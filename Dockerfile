@@ -1,7 +1,7 @@
 # ---------- Base PHP Apache ----------
 FROM php:8.2-apache
 
-# Install system dependencies and PHP extensions
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     && docker-php-ext-install mysqli zip \
     && rm -rf /var/lib/apt/lists/*
+
+# Fix Apache port for Render (Default 80 -> 10000)
+RUN sed -i 's/80/10000/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 
 # Enable Apache rewrite module
 RUN a2enmod rewrite
@@ -20,24 +23,19 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# -------------------- Optimized Composer Caching --------------------
-# 1. Copy composer.json and composer.lock first
+# ---------- Optimized Build ----------
+# 1. Copy composer files
 COPY composer.json composer.lock* ./
 
-# 2. Copy src/ folder (required for autoload files)
-COPY src/ src/
-
-# 3. Install PHP libraries (google/apiclient will be installed automatically)
+# 2. Install dependencies (creates /vendor)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# 4. Copy the rest of the project
+# 3. Copy the rest of the project
 COPY . .
 
-# Fix permissions (important for uploads/temp files)
+# 4. Permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Expose Apache port
 EXPOSE 10000
 
-# Start Apache
 CMD ["apache2-foreground"]

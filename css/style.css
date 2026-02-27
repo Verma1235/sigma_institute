@@ -5,6 +5,39 @@
   --border-color: rgb(120, 206, 243);
   --body: white;
 }
+/* smooth scroll bar */
+
+/* Apply to entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 2px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f3f6;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4f46e5, #6366f1);
+  border-radius: 10px;
+  border: 2px solid #f1f3f6;
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #4338ca, #4f46e5);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #f1f3f6;
+}
 
 .font-h {
   font-family: "Josefin Sans", sans-serif;
@@ -218,7 +251,7 @@
   border-top: 4px solid var(--border-color);
   border-bottom: 4px solid var(--border-color);
   border-right: 4px solid var(--border-color);
-  overflow: scroll;
+  overflow-y: scroll;
   scroll-behavior: smooth;
 }
 

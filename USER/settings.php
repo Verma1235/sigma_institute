@@ -95,7 +95,7 @@ if (isset($_SESSION['ADMIN'])) {
             }
 
             .card-header {
-                background: #4f46e5;
+                background: linear-gradient(to right, rgb(17, 206, 235), rgb(64, 241, 117));
                 color: white;
                 padding: 20px;
             }
@@ -197,7 +197,7 @@ if (isset($_SESSION['ADMIN'])) {
         <div class="containersetting">
             <div id="response-msg"></div>
 
-            <div class="card">
+            <div class="card ">
                 <div class="card-header">
                     <h2>System Configuration</h2>
                 </div>

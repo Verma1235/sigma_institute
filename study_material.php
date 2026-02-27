@@ -30,6 +30,79 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
         </div>
 
         <div class="row" id="PDF_CONTAINER"></div>
+        <div class="modal fade" id="Edit_pdf_modal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 font-h">Edit/View Pdf</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container-fluid shadow-sm p-2">
+                            <form class="font-h" id="Submit_form">
+                                <div class="form-group mb-2">
+                                    <label>Pdf ID</label>
+                                    <input type="text" name="pdf_id" class="form-control" id="PDF_ID_EDIT" readonly>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Chapter Name</label>
+                                    <input type="text" name="chapter_name" class="form-control" id="CHAPTER_NAME" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Chapter No</label>
+                                    <input type="text" name="ch_no" class="form-control" id="CHAPTER_NO" required>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Subject</label>
+                                    <select class="form-control" name="subject" id="SUBJECT">
+                                        <option value="PHYSICS">Physics</option>
+                                        <option value="CHEMISTRY">Chemistry</option>
+                                        <option value="BIOLOGY">Biology</option>
+                                        <option value="SCIENCE">Science</option>
+                                        <option value="ENGLISH">English</option>
+                                        <option value="MATHEMATICS">Mathematics</option>
+                                        <option value="COMPUTER SCIENCE">Computer Science</option>
+                                        <option value="SOCIAL SCIENCE">Social science</option>
+                                        <option value="HINDI">Hindi</option>
+                                        <option value="OTHER">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Class</label>
+                                    <select class="form-control" name="Class" id="CLASS_MODAL">
+                                        <option value="0">All</option>
+                                        <?php for ($i = 6; $i <= 12; $i++)
+                                            echo "<option value='$i'>$i</option>"; ?>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Description</label>
+                                    <textarea name="Dis" class="form-control" id="DESCRIPTION_MODAL" rows="2"></textarea>
+                                </div>
+                                <div class="form-group mb-2">
+                                    <label>Current File</label>
+                                    <input type="text" name="pre_file" class="form-control" id="PDF_FILE_NAME" readonly>
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label>Change file:</label>
+                                    <input type="file" name="file" id="FILE_UPLOADED" class="form-control">
+                                </div>
+
+                                <div class="progress mb-2" style="height: 20px;">
+                                    <div class="progress-bar progress-bar-striped bg-success" id="ProgressBar"
+                                        style="width: 0%">0%</div>
+                                </div>
+
+                                <div id="alert_box" class="badge w-100 p-2 mb-2" style="display:none;"></div>
+
+                                <button type="submit" class="btn btn-danger w-100" id="STUDY_MATERIAL_UPLOAD">Save
+                                    Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script>
             $(document).ready(function () {
@@ -140,7 +213,7 @@ if (isset($_SESSION['FILES_LOCATION']) && $_SESSION['FILES_LOCATION'] == 'drive'
                 });
             });
         </script>
-    <?php
+        <?php
     } else {
         include("study_material_old.php");
     }

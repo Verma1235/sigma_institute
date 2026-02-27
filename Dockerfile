@@ -11,6 +11,15 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install mysqli zip \
     && rm -rf /var/lib/apt/lists/*
 
+# ---------- PHP Configuration Overrides ----------
+# This fixes the "POST Content-Length exceeds the limit" error
+# Maxed out settings for large files
+RUN echo "upload_max_filesize = 1024M" > /usr/local/etc/php/conf.d/app-limits.ini \
+    && echo "post_max_size = 1100M" >> /usr/local/etc/php/conf.d/app-limits.ini \
+    && echo "max_execution_time = 7200" >> /usr/local/etc/php/conf.d/app-limits.ini \
+    && echo "max_input_time = 7200" >> /usr/local/etc/php/conf.d/app-limits.ini \
+    && echo "memory_limit = 512M" >> /usr/local/etc/php/conf.d/app-limits.ini
+
 # Fix Apache port for Render (Default 80 -> 10000)
 RUN sed -i 's/80/10000/g' /etc/apache2/sites-available/000-default.conf /etc/apache2/ports.conf
 

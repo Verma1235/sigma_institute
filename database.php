@@ -1,9 +1,9 @@
 <?php
 
 $host = getenv("DB_HOST") ?: "gateway01.ap-southeast-1.prod.aws.tidbcloud.com";
-$user = getenv("DB_USER") ?: "sigma";
-$pass = getenv("DB_PASS") ?: "YOUR_PASSWORD";
-$db   = getenv("DB_NAME") ?: "YOUR_DATABASE";
+$user = getenv("DB_USERNAME") ?: "sigma";
+$pass = getenv("DB_PASSWORD") ?: "YOUR_PASSWORD";
+$db   = getenv("DB_DATABASE") ?: "YOUR_DATABASE";
 $port = getenv("DB_PORT") ?: 4000;
 
 $conn = mysqli_init();
